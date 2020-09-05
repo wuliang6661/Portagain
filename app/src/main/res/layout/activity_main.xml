@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xixun.add.serialport.MainActivity">
+
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="160px"
+        android:layout_height="120px"
+        android:gravity="center_horizontal"
+        android:background="@color/colorBlack"
+        android:orientation="vertical">
+
+        <com.xixun.zfr.layouts.CustomLayout
+            android:id="@+id/ml"
+            android:layout_margin="10px"
+            android:background="@color/colorBlack"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.xixun.zfr.layouts.CustomLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
