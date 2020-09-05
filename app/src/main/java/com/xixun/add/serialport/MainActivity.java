@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
     //e卡上地址
     String port = "/dev/ttyMT3";
 
-git
+
     Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         @Override
         public void uncaughtException(Thread t, Throwable e) {
