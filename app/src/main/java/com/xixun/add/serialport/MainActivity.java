@@ -16,15 +16,17 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.AbsoluteLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.xixun.api.HttpResultSubscriber;
+import com.xixun.api.HttpServerImpl;
 import com.xixun.joey.uart.BytesData;
 import com.xixun.joey.uart.IUartListener;
 import com.xixun.joey.uart.IUartService;
 import com.xixun.zfr.layouts.CustomLayout;
 
 import java.lang.reflect.Method;
+
 import io.reactivex.disposables.Disposable;
 
 
@@ -33,7 +35,7 @@ public class MainActivity extends Activity {
     WifiManager wifiManager;
     ConnectivityManager conManager;
     int face1 = 0;
-    int face2 =0;
+    int face2 = 0;
     Typeface face;
     CustomLayout cl;
     int color;
@@ -49,7 +51,7 @@ public class MainActivity extends Activity {
     TextInfo1 textInfo1;
     Disposable disposable;
     //y卡485地址
-   //String port = "/dev/s3c2410_serial3";
+    //String port = "/dev/s3c2410_serial3";
     //e卡上地址
     String port = "/dev/ttyMT3";
 
@@ -82,13 +84,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         conManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        cl=findViewById(R.id.ml);
+        cl = findViewById(R.id.ml);
         t = getDev();
         handler1 = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 TextInfo1 value = (TextInfo1) msg.obj;
-                TextView tv=new TextView(MainActivity.this);
+                updateData(value.text, value.text, value.text);
+                TextView tv = new TextView(MainActivity.this);
                 if (value != null && value.getStatu() == "show") {
                     ti = value;
                     Log.i("TAG", "ti.text:" + ti.text);
@@ -120,10 +123,10 @@ public class MainActivity extends Activity {
                     } else if (ti.color == 9) {
                         color = Color.DKGRAY;
                     }
-                    Log.i("TAG", "Color"+color);
-                   if (face2!=face1) {
-                       Log.i("TAG", "字体改变");
-                         if (ti.textType == 1) {
+                    Log.i("TAG", "Color" + color);
+                    if (face2 != face1) {
+                        Log.i("TAG", "字体改变");
+                        if (ti.textType == 1) {
                             face = Typeface.createFromAsset(getAssets(), "fonts/宋体.TTF");
                         } else if (ti.textType == 2) {
                             face = Typeface.createFromAsset(getAssets(), "fonts/华文新魏.ttf");
@@ -138,14 +141,14 @@ public class MainActivity extends Activity {
                         }
                         face2 = face1;
 
-                    }else{
-                       Log.i("TAG", "字体没有改变");
-                   }
-                   //设置字体
+                    } else {
+                        Log.i("TAG", "字体没有改变");
+                    }
+                    //设置字体
 
                     tv.setSingleLine(true);
                     tv.setTypeface(face);
-                   //设置文本
+                    //设置文本
                     tv.setText(ti.text);
                     //设置文本大小
                     tv.setTextSize(ti.height);
@@ -153,7 +156,7 @@ public class MainActivity extends Activity {
                     tv.setTextColor(color);
                     cl.addView(tv);
                     Log.i("TAG", "已显示文本");
-                } else if (value.getStatu() == "close"&&tv!=null) {
+                } else if (value.getStatu() == "close" && tv != null) {
 
                     cl.removeAllViews();
                     Log.i("TAG", "已清除显示");
@@ -192,7 +195,7 @@ public class MainActivity extends Activity {
                             for (byte a : data.getData()) {
                                 bb[count] = a;
                                 s1 += "0x" + Integer.toHexString(a & 0xFF) + " ";
-                                  Log.i("TAG","收到的数据为："+s1);
+                                Log.i("TAG", "收到的数据为：" + s1);
                                 if (count == 0) {
                                     Log.i("TAG", "开始接受数据");
                                     if (bb[0] == 0xfe || bb[0] == -2) {
@@ -313,7 +316,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        if(disposable!=null){
+        if (disposable != null) {
             disposable.dispose();
             unbindService(conn);
         }
@@ -393,6 +396,24 @@ public class MainActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+
+    /**
+     * 上报数据
+     */
+    private void updateData(String liangdu, String wendu, String shidu) {
+        HttpServerImpl.createOrUpdateOne(liangdu, wendu, shidu).subscribe(new HttpResultSubscriber<String>() {
+            @Override
+            public void onSuccess(String s) {
+
+            }
+
+            @Override
+            public void onFiled(String message) {
+
+            }
+        });
     }
 }
 
