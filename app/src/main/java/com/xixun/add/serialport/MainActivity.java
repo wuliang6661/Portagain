@@ -53,7 +53,11 @@ public class MainActivity extends Activity {
     //y卡485地址
     //String port = "/dev/s3c2410_serial3";
     //e卡上地址
-    String port = "/dev/ttyMT3";
+//    String port = "/dev/ttyS0";
+
+//    String port = "/dev/ttyS1";
+
+    String port = "/dev/ttyS4";
 
 
     Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
@@ -90,7 +94,7 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 TextInfo1 value = (TextInfo1) msg.obj;
-                updateData(value.text, value.text, value.text);
+                updateData(null, value.text, null);
                 TextView tv = new TextView(MainActivity.this);
                 if (value != null && value.getStatu() == "show") {
                     ti = value;
